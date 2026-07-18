@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pathfinding Visualizer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>PathFinding Visualizer</h1>
+  <p class="subtitle">Click and drag on the grid to draw walls. Pick an algorithm and hit Start.</p>
+
+  <div class="controls">
+    <label for="algo">Algorithm:</label>
+    <select id="algo">
+      <option value="bfs">Breadth-First Search (BFS)</option>
+      <option value="dijkstra">Dijkstra's Algorithm</option>
+    </select>
+
+    <button id="startBtn">Start Search</button>
+    <button id="clearWallsBtn">Clear Walls</button>
+    <button id="clearBoardBtn">Clear Board</button>
+  </div>
+
+  <div id="grid"></div>
+
+  <div class="legend">
+    <span><i class="box start"></i> Start</span>
+    <span><i class="box end"></i> End</span>
+    <span><i class="box wall"></i> Wall</span>
+    <span><i class="box visited"></i> Visited</span>
+    <span><i class="box path"></i> Shortest Path</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
