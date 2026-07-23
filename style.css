@@ -20,6 +20,9 @@ h1 {
   margin-top: 0;
   margin-bottom: 20px;
   font-size: 14px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .controls {
@@ -29,6 +32,11 @@ h1 {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.controls label {
+  font-size: 14px;
+  color: #ccc;
 }
 
 select, button {
@@ -49,12 +57,13 @@ button:hover {
   background: #3a75e6;
 }
 
-#clearWallsBtn, #clearBoardBtn {
-  background: #555;
-}
-
-#clearWallsBtn:hover, #clearBoardBtn:hover {
-  background: #444;
+/* wall mode toggle looks distinctly "armed" when it's on, so it's obvious
+   that clicking/dragging on the grid will now draw walls instead of
+   letting you type weights */
+button#wallModeBtn.active {
+  background: #0a0a0f;
+  color: #fff;
+  box-shadow: 0 0 0 2px #4f8cff inset;
 }
 
 #grid {
@@ -65,24 +74,63 @@ button:hover {
   user-select: none;
 }
 
+/* Base look shared by every cell, whether it's a plain weight input
+   or the Start/End marker div. */
 .cell {
   width: 24px;
   height: 24px;
   border: 1px solid #333;
   background: #2a2a3d;
   transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  padding: 0;
+  margin: 0;
 }
 
-.wall {
-  background: #111;
+/* Every non-start/end cell is a real <input type="number"> so its
+   weight is always directly visible and directly editable. */
+input.cell {
+  text-align: center;
+  cursor: text;
+  font-family: inherit;
+  /* hide the little up/down spinner arrows so it reads like a plain cell */
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+input.cell::-webkit-outer-spin-button,
+input.cell::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input.cell:focus {
+  outline: 2px solid #4f8cff;
+  outline-offset: -2px;
+  z-index: 1;
+  position: relative;
 }
 
 .start {
   background: #2ecc71;
+  cursor: grab;
 }
 
 .end {
   background: #e74c3c;
+  cursor: grab;
+}
+
+/* walls: solid black block, no text. not draggable like start/end, and
+   not editable like a weight cell -- this cell is just plain blocked */
+.wall {
+  background: #0a0a0f;
+  border-color: #000;
+  cursor: default;
 }
 
 .visited {
@@ -92,11 +140,42 @@ button:hover {
 
 .path {
   background: #f1c40f;
+  color: #1e1e2e;
+  text-shadow: none;
 }
 
 @keyframes pop {
   0%   { transform: scale(0.4); }
   100% { transform: scale(1); }
+}
+
+.stats {
+  margin: 20px auto 0;
+  max-width: 640px;
+  min-height: 20px;
+  font-size: 14px;
+  color: #eee;
+  background: #2a2a3d;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 12px 18px;
+  display: none;
+}
+
+.stats.visible {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.stats .stat-item strong {
+  color: #4f8cff;
+}
+
+.stats.no-path {
+  color: #e74c3c;
+  font-weight: 600;
 }
 
 .legend {
@@ -120,6 +199,7 @@ button:hover {
 
 .legend .start { background: #2ecc71; }
 .legend .end { background: #e74c3c; }
-.legend .wall { background: #111; }
+.legend .weighted { background: #b22222; }
+.legend .wall { background: #0a0a0f; border: 1px solid #444; }
 .legend .visited { background: #4f8cff; }
 .legend .path { background: #f1c40f; }
